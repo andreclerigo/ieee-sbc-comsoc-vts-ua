@@ -23,6 +23,9 @@ const pageContent = {
 };
 
 const vtoolsResultLimit = 10;
+const isLocalDevHost =
+  typeof window !== 'undefined' &&
+  ['localhost', '127.0.0.1'].includes(window.location.hostname);
 
 function initials(name) {
   return name
@@ -160,8 +163,12 @@ async function fetchVtoolsList(query) {
 
   try {
     return await load(vtoolsConfig.endpoint);
-  } catch {
-    return load(vtoolsConfig.directEndpoint);
+  } catch (error) {
+    if (isLocalDevHost) {
+      return load(vtoolsConfig.directEndpoint);
+    }
+
+    throw error;
   }
 }
 
@@ -182,8 +189,12 @@ async function fetchMeetingsFeed() {
 
   try {
     return await load(vtoolsConfig.meetingsEndpoint);
-  } catch {
-    return load(vtoolsConfig.directMeetingsEndpoint);
+  } catch (error) {
+    if (isLocalDevHost) {
+      return load(vtoolsConfig.directMeetingsEndpoint);
+    }
+
+    throw error;
   }
 }
 

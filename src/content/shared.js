@@ -51,7 +51,7 @@ export const languageOptions = [
 ];
 
 export const vtoolsConfig = {
-  endpoint: '/api/vtools-events',
+  endpoint: '/api/events-list',
   directEndpoint: 'https://events.vtools.ieee.org/RST/events/api/public/v7/events/list',
   meetingsEndpoint: '/api/vtools-meetings',
   directMeetingsEndpoint: 'https://events.vtools.ieee.org/meetings/R80045/-0/365',
