@@ -6,6 +6,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
+      '/vtools-events-list': {
+        target: 'https://events.vtools.ieee.org',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/vtools-events-list/, '/RST/events/api/public/v7/events/list')
+      },
       '/api/events-list': {
         target: 'https://events.vtools.ieee.org',
         changeOrigin: true,
