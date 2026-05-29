@@ -24,6 +24,7 @@ const pageContent = {
 
 const vtoolsResultLimit = 10;
 const isLocalDevHost =
+  import.meta.env.DEV &&
   typeof window !== 'undefined' &&
   ['localhost', '127.0.0.1'].includes(window.location.hostname);
 
@@ -198,6 +199,21 @@ async function fetchMeetingsFeed() {
   }
 }
 
+async function fetchStaticVtoolsSnapshot() {
+  const response = await fetch(vtoolsConfig.snapshotEndpoint, {
+    headers: {
+      Accept: 'application/json'
+    },
+    cache: 'no-cache'
+  });
+
+  if (!response.ok) {
+    throw new Error(`vTools snapshot responded with ${response.status}`);
+  }
+
+  return response.json();
+}
+
 function parseMeetingsFeed(html) {
   if (!html || typeof DOMParser === 'undefined') {
     return [];
@@ -264,6 +280,87 @@ function mergeEventSources(feedEntries, chapterEvents) {
   });
 
   return Array.from(byId.values()).slice(0, vtoolsResultLimit);
+}
+
+async function normalizeEventRefs(eventRefs, language, labels, options = {}) {
+  const { fetchMissingDetails = false } = options;
+
+  return Promise.all(
+    eventRefs.map(async (eventRef) => {
+      if (eventRef.event) {
+        return normalizeVtoolsEvent(eventRef.event, language, labels, eventRef.fallback);
+      }
+
+      if (fetchMissingDetails) {
+        try {
+          const detail = await fetchEventDetail(eventRef.id);
+          return detail
+            ? normalizeVtoolsEvent(detail, language, labels, eventRef.fallback)
+            : normalizeFallbackEvent(eventRef.fallback, labels);
+        } catch {
+          return normalizeFallbackEvent(eventRef.fallback, labels);
+        }
+      }
+
+      return normalizeFallbackEvent(eventRef.fallback, labels);
+    })
+  );
+}
+
+async function loadRuntimeEvents(language, labels) {
+  const [meetingsHtml, chapterEvents] = await Promise.all([
+    fetchMeetingsFeed(),
+    fetchChapterEvents()
+  ]);
+  const feedEntries = parseMeetingsFeed(meetingsHtml);
+  let status = 'ready';
+  let eventRefs = mergeEventSources(feedEntries, chapterEvents);
+
+  if (eventRefs.length === 0) {
+    const recent = await fetchVtoolsList({
+      limit: '1000',
+      span: '~now',
+      sort: '-start-time',
+      spoids: vtoolsConfig.sectionSpoid
+    });
+    const recentEvents = (recent.data || []).filter((event) => isChapterEvent(event.attributes)).slice(0, vtoolsResultLimit);
+    eventRefs = recentEvents.map((event) => ({ id: event.id, event }));
+    status = eventRefs.length > 0 ? 'recent' : 'empty';
+  }
+
+  return {
+    status,
+    events: await normalizeEventRefs(eventRefs, language, labels, { fetchMissingDetails: true })
+  };
+}
+
+async function loadSnapshotEvents(language, labels) {
+  const snapshot = await fetchStaticVtoolsSnapshot();
+  const feedEntries = parseMeetingsFeed(snapshot.meetingsHtml);
+  const detailedEvents = [
+    ...(Array.isArray(snapshot.meetingEvents) ? snapshot.meetingEvents : []),
+    ...(Array.isArray(snapshot.chapterEvents) ? snapshot.chapterEvents : [])
+  ];
+  let status = 'ready';
+  let eventRefs = mergeEventSources(feedEntries, detailedEvents);
+
+  if (eventRefs.length === 0 && detailedEvents.length > 0) {
+    eventRefs = detailedEvents.slice(0, vtoolsResultLimit).map((event) => ({ id: event.id, event }));
+  }
+
+  if (eventRefs.length === 0) {
+    const recentEvents = (Array.isArray(snapshot.recentEvents) ? snapshot.recentEvents : [])
+      .filter((event) => isChapterEvent(event.attributes))
+      .slice(0, vtoolsResultLimit);
+
+    eventRefs = recentEvents.map((event) => ({ id: event.id, event }));
+    status = eventRefs.length > 0 ? 'recent' : 'empty';
+  }
+
+  return {
+    status,
+    events: await normalizeEventRefs(eventRefs, language, labels)
+  };
 }
 
 function SectionHeading({ eyebrow, title, children }) {
@@ -416,52 +513,26 @@ export default function App() {
   useEffect(() => {
     let cancelled = false;
 
-    async function loadNetworkEvents() {
+    async function loadEvents() {
       setVtoolsState({ status: 'loading', events: [] });
 
       try {
-        const [meetingsHtml, chapterEvents] = await Promise.all([
-          fetchMeetingsFeed(),
-          fetchChapterEvents()
-        ]);
-        const feedEntries = parseMeetingsFeed(meetingsHtml);
-        let status = 'ready';
-        let eventRefs = mergeEventSources(feedEntries, chapterEvents);
+        let nextState;
 
-        if (eventRefs.length === 0) {
-          const recent = await fetchVtoolsList({
-            limit: '1000',
-            span: '~now',
-            sort: '-start-time',
-            spoids: vtoolsConfig.sectionSpoid
-          });
-          const recentEvents = (recent.data || []).filter((event) => isChapterEvent(event.attributes)).slice(0, vtoolsResultLimit);
-          eventRefs = recentEvents.map((event) => ({ id: event.id, event }));
-          status = eventRefs.length > 0 ? 'recent' : 'empty';
+        try {
+          nextState = isLocalDevHost
+            ? await loadRuntimeEvents(language, content.events)
+            : await loadSnapshotEvents(language, content.events);
+        } catch (error) {
+          if (isLocalDevHost) {
+            throw error;
+          }
+
+          nextState = await loadRuntimeEvents(language, content.events);
         }
 
-        const detailedEvents = await Promise.all(
-          eventRefs.map(async (eventRef) => {
-            if (eventRef.event) {
-              return normalizeVtoolsEvent(eventRef.event, language, content.events, eventRef.fallback);
-            }
-
-            try {
-              const detail = await fetchEventDetail(eventRef.id);
-              return detail
-                ? normalizeVtoolsEvent(detail, language, content.events, eventRef.fallback)
-                : normalizeFallbackEvent(eventRef.fallback, content.events);
-            } catch {
-              return normalizeFallbackEvent(eventRef.fallback, content.events);
-            }
-          })
-        );
-
         if (!cancelled) {
-          setVtoolsState({
-            status,
-            events: detailedEvents
-          });
+          setVtoolsState(nextState);
         }
       } catch {
         if (!cancelled) {
@@ -470,7 +541,7 @@ export default function App() {
       }
     }
 
-    loadNetworkEvents();
+    loadEvents();
 
     return () => {
       cancelled = true;
