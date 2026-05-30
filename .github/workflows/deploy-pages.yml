@@ -3,6 +3,9 @@ name: Deploy GitHub Pages
 on:
   push:
     branches: [main]
+  schedule:
+    # Rebuild daily so the static vTools event snapshot stays current.
+    - cron: '17 4 * * *'
   workflow_dispatch:
 
 permissions:

@@ -4,7 +4,7 @@ Website em React + Vite + Tailwind CSS para o novo IEEE Student Branch Chapter C
 
 ## Deployment
 
-The production site is built as a static GitHub Pages artifact from the `main` branch by `.github/workflows/deploy-pages.yml`.
+The production site is built as a static GitHub Pages artifact from the `main` branch by `.github/workflows/deploy-pages.yml`. The workflow also runs daily at 04:17 UTC to refresh the static vTools event snapshot.
 
 The build runs `npm run build:vtools` before Vite so the public events area can use a generated static snapshot at `/data/vtools-snapshot.json`. This keeps the site compatible with GitHub Pages, which cannot run the former Nginx or serverless proxy routes used for live vTools API calls.
 
