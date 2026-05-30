@@ -1,0 +1,17 @@
+{
+  "name": "IEEE ComSoc/VTS UA",
+  "short_name": "ComSoc/VTS UA",
+  "description": "IEEE Student Branch Chapter ComSoc/VTS at the University of Aveiro.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f5f7fa",
+  "theme_color": "#00629B",
+  "icons": [
+    {
+      "src": "https://ua.ieee-pt.org/logos/favicon.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
