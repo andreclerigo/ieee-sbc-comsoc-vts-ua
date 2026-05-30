@@ -1,8 +1,9 @@
 services:
-  web:
-    image: andreclerigo/ieee-sbc-comsoc-vts-ua:latest
-    pull_policy: always
+  ieee-website:
+    build:
+      context: .
+    image: ${IEEE_IMAGE:-andreclerigo/ieee-sbc-comsoc-vts-ua:latest}
+    container_name: ieee-sbc-comsoc-vts-ua
     ports:
       - "8081:80"
     restart: unless-stopped
-    container_name: ieee_website

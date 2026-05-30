@@ -1,32 +1,21 @@
-# Stage 1: Build the application
-FROM node:20-alpine AS build
+FROM node:20-alpine AS builder
 
-# Set the working directory
 WORKDIR /app
 
-# Copy package files
-COPY package.json package-lock.json ./
-
-# Install dependencies
+COPY package*.json ./
 RUN npm ci
 
-# Copy the rest of the application code
 COPY . .
-
-# Build the application
 RUN npm run build
 
-# Stage 2: Serve the application with Nginx
-FROM nginx:alpine
+FROM nginx:1.27-alpine
 
-# Copy the build output to replace the default nginx contents
-COPY --from=build /app/dist /usr/share/nginx/html
+LABEL org.opencontainers.image.title="IEEE SBC ComSoc/VTS UA website"
 
-# Copy the custom Nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Expose port 80
 EXPOSE 80
 
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget -qO- http://127.0.0.1/ >/dev/null || exit 1
