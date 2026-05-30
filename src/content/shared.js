@@ -21,15 +21,19 @@ export const links = {
   it: 'https://www.it.pt/ITSites/Index/3'
 };
 
+const publicBaseUrl = import.meta.env?.BASE_URL || '/';
+const publicUrl = (path) => `${publicBaseUrl}${path.replace(/^\/+/, '')}`;
+
 export const logoUrls = {
-    chapter: "/assets/logos/chapter-logo.png",
-    chapterWhite: "/assets/logos/chapter-logo-white.png",
+    chapter: publicUrl("assets/logos/chapter-logo.png"),
+    chapterWhite: publicUrl("assets/logos/chapter-logo-white.png"),
     sbAveiro: "https://ua.ieee-pt.org/logos/full_white_logo.png",
     ieee: "https://vtsociety.org/themes/custom/catalyze_tw/ieee-logo.png",
-    ua: "/assets/logos/ua.png",
-    it: "/assets/logos/it.png",
-    comsoc: "/assets/logos/comsoc.png",
-    vts: "/assets/logos/vts.png",
+    ua: publicUrl("assets/logos/ua.png"),
+    it: publicUrl("assets/logos/it.png"),
+    comsoc: publicUrl("assets/logos/comsoc.png"),
+    vts: publicUrl("assets/logos/vts.png"),
+    fernandoVelez: publicUrl("assets/fernando-velez.jpg"),
     favicon: "https://ua.ieee-pt.org/logos/favicon.png",
     uaCarousel1:
         "https://ehprysebdahhtcqlszez.supabase.co/storage/v1/object/public/uploads/carousel/1760352376997-101154350.png",
@@ -51,6 +55,7 @@ export const languageOptions = [
 ];
 
 export const vtoolsConfig = {
+  snapshotEndpoint: publicUrl('data/vtools-snapshot.json'),
   endpoint: '/vtools-events-list',
   directEndpoint: 'https://events.vtools.ieee.org/RST/events/api/public/v7/events/list',
   meetingsEndpoint: '/api/vtools-meetings',

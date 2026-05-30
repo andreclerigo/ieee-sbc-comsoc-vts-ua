@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
+    "build": "npm run build:vtools && vite build",
+    "build:vtools": "node scripts/generate-vtools-snapshot.mjs",
     "preview": "vite preview --host 0.0.0.0"
   },
   "dependencies": {
