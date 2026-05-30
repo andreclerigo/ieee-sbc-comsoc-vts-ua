@@ -156,7 +156,7 @@ const pt = {
             },
             {
                 name: "Fernando Velez",
-                photoUrl: "/assets/fernando-velez.jpg",
+                photoUrl: logoUrls.fernandoVelez,
                 role: "Conselheiro",
                 area: "Instituto de Telecomunicações",
                 focus: "Apoio institucional e orientação entre o chapter, a Student Branch e o contexto académico da UA.",
