@@ -122,7 +122,11 @@ async function readExistingSnapshot() {
   }
 }
 
-function hasSnapshotData(snapshot = {}) {
+function hasSnapshotData(snapshot) {
+  if (!snapshot) {
+    return false;
+  }
+
   return Boolean(snapshot.meetingsHtml)
     || ['meetingEvents', 'chapterEvents', 'recentEvents'].some(
       (key) => Array.isArray(snapshot[key]) && snapshot[key].length > 0

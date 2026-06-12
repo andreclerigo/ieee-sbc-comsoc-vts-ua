@@ -4,5 +4,4 @@ dist
 .git
 .DS_Store
 .env
-public/data/vtools-snapshot.json
 *.log
