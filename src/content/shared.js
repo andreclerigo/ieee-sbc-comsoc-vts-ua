@@ -9,6 +9,7 @@ export const links = {
   ieeeUaAlt: 'https://ua.ieee-pt.org/',
   instagram: 'https://www.instagram.com/ieeeuasbpt/',
   facebook: 'https://www.facebook.com/ieeeuasbpt/',
+  linkedinChapter: 'https://www.linkedin.com/in/sbc-comsoc-vts-ua-2a2391416/',
   linkedinSb: 'https://pt.linkedin.com/company/ieeeuasbpt',
   youtube: 'https://www.youtube.com/@ieeeuasbpt',
   comsocPt: 'https://webinabox.vtools.ieee.org/wibp_home/index/CH08445',

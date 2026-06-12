@@ -504,6 +504,13 @@ export default function App() {
   const [vtoolsState, setVtoolsState] = useState({ status: 'loading', events: [] });
   const content = pageContent[language];
   const currentPhoto = content.eventPhotos[activePhoto];
+  const highlightedEventIds = new Set(
+    content.chapterEvents
+      .map((event) => event.vtoolsId)
+      .filter(Boolean)
+      .map(String)
+  );
+  const networkEvents = vtoolsState.events.filter((event) => !highlightedEventIds.has(String(event.id || '')));
 
   useEffect(() => {
     document.documentElement.lang = content.htmlLang;
@@ -713,6 +720,11 @@ export default function App() {
                 <p className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-slate-500">
                   <MapPin className="h-4 w-4 text-[#00629B]" /> {event.place}
                 </p>
+                {event.href ? (
+                  <a href={event.href} target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-2 rounded-md border border-slate-300 px-4 py-2 text-sm font-bold text-[#00629B] hover:border-[#00629B] hover:bg-[#00629B] hover:text-white">
+                    <ExternalLink className="h-4 w-4" /> {content.events.openEvent}
+                  </a>
+                ) : null}
               </div>
             </article>
           ))}
@@ -741,7 +753,10 @@ export default function App() {
             {vtoolsState.status === 'recent' ? (
               <p className="py-4 text-sm font-semibold text-slate-600">{content.events.recentNotice}</p>
             ) : null}
-            {vtoolsState.events.map((event) => (
+            {!['loading', 'error', 'empty'].includes(vtoolsState.status) && networkEvents.length === 0 ? (
+              <p className="py-5 text-sm font-semibold text-slate-600">{content.events.networkEmpty}</p>
+            ) : null}
+            {networkEvents.map((event) => (
               <a key={event.href} href={event.href} target="_blank" rel="noreferrer" className="grid gap-3 py-5 transition hover:bg-slate-50 md:grid-cols-[8rem_1fr_auto] md:px-2">
                 <div>
                   <p className="text-sm font-bold text-[#00629B]">{event.date}</p>
@@ -830,7 +845,7 @@ export default function App() {
             <a href={links.email} className="inline-flex items-center justify-center gap-2 rounded-md bg-white px-5 py-3 font-bold text-[#00629B] hover:bg-slate-100">
               <Mail className="h-4 w-4" /> Email
             </a>
-            <a href={links.linkedinSb} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-md border border-white/40 px-5 py-3 font-bold text-white hover:bg-white/10">
+            <a href={links.linkedinChapter} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-md border border-white/40 px-5 py-3 font-bold text-white hover:bg-white/10">
               <Linkedin className="h-4 w-4" /> LinkedIn
             </a>
           </div>
