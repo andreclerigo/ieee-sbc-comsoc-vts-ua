@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { vtoolsConfig } from '../src/content/shared.js';
@@ -114,6 +114,49 @@ function parseMeetingIds(html = '') {
   return Array.from(ids).slice(0, meetingDetailLimit);
 }
 
+async function readExistingSnapshot() {
+  try {
+    return JSON.parse(await readFile(snapshotPath, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+function hasSnapshotData(snapshot = {}) {
+  return Boolean(snapshot.meetingsHtml)
+    || ['meetingEvents', 'chapterEvents', 'recentEvents'].some(
+      (key) => Array.isArray(snapshot[key]) && snapshot[key].length > 0
+    );
+}
+
+async function writeSnapshot(snapshot) {
+  await mkdir(dirname(snapshotPath), { recursive: true });
+  await writeFile(snapshotPath, `${JSON.stringify(snapshot, null, 2)}\n`);
+}
+
+async function writeSnapshotOrReuseExisting(snapshot, reason) {
+  if (!hasSnapshotData(snapshot)) {
+    const existingSnapshot = await readExistingSnapshot();
+
+    if (hasSnapshotData(existingSnapshot)) {
+      await writeSnapshot(existingSnapshot);
+      console.warn(`${reason}; kept existing vTools snapshot generated at ${existingSnapshot.generatedAt || 'unknown time'}.`);
+      return { snapshot: existingSnapshot, reusedExisting: true };
+    }
+  }
+
+  await writeSnapshot(snapshot);
+  return { snapshot, reusedExisting: false };
+}
+
+function snapshotSummary(snapshot = {}) {
+  return [
+    `${snapshot.meetingEvents?.length || 0} meeting event details`,
+    `${snapshot.chapterEvents?.length || 0} chapter events`,
+    `${snapshot.recentEvents?.length || 0} recent events`
+  ].join(', ');
+}
+
 async function fetchEventDetail(id) {
   const detail = await fetchJson({ id, limit: '1' }, `vTools event ${id}`);
   return detail.data?.[0] || null;
@@ -187,16 +230,12 @@ async function main() {
     errors
   };
 
-  await mkdir(dirname(snapshotPath), { recursive: true });
-  await writeFile(snapshotPath, `${JSON.stringify(snapshot, null, 2)}\n`);
+  const { snapshot: writtenSnapshot } = await writeSnapshotOrReuseExisting(
+    snapshot,
+    'vTools snapshot refresh returned no event data'
+  );
 
-  const summary = [
-    `${meetingEvents.length} meeting event details`,
-    `${chapterEvents.length} chapter events`,
-    `${snapshot.recentEvents.length} recent events`
-  ].join(', ');
-
-  console.log(`Generated ${snapshotPath} (${summary}).`);
+  console.log(`Generated ${snapshotPath} (${snapshotSummary(writtenSnapshot)}).`);
 
   if (errors.length > 0) {
     console.warn(`vTools snapshot generated with ${errors.length} warning(s).`);
@@ -204,13 +243,14 @@ async function main() {
 }
 
 main().catch(async (error) => {
+  const message = error instanceof Error ? error.message : String(error);
+
   errors.push({
     label: 'snapshot',
-    message: error instanceof Error ? error.message : String(error)
+    message
   });
 
-  await mkdir(dirname(snapshotPath), { recursive: true });
-  await writeFile(snapshotPath, `${JSON.stringify({
+  const emptySnapshot = {
     generatedAt: new Date().toISOString(),
     sources: {
       meetings: vtoolsConfig.directMeetingsEndpoint,
@@ -223,7 +263,16 @@ main().catch(async (error) => {
     chapterEvents: [],
     recentEvents: [],
     errors
-  }, null, 2)}\n`);
+  };
 
-  console.warn(`Generated empty vTools snapshot after error: ${errors.at(-1).message}`);
+  const { reusedExisting } = await writeSnapshotOrReuseExisting(
+    emptySnapshot,
+    `vTools snapshot refresh failed: ${message}`
+  );
+
+  if (reusedExisting) {
+    return;
+  }
+
+  console.warn(`Generated empty vTools snapshot after error: ${message}`);
 });

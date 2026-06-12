@@ -10,7 +10,6 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
-public/data/vtools-snapshot.json
 *.local
 
 # Editor directories and files
