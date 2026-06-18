@@ -50,6 +50,17 @@ export const logoUrls = {
         "https://ehprysebdahhtcqlszez.supabase.co/storage/v1/object/public/uploads/events/1761566591924-356583323.jpg",
 };
 
+export const photoAlbums = {
+  openNetworking: {
+    href: 'https://photos.andreclerigo.com/share/3jYpcz-O5GFljeb_FfDGWjLRDg2VrBRkA2LR6CXBhBlZW3UtICQjkLoRb_7QLZ5Vka0',
+    thumbnail: 'https://photos.andreclerigo.com/api/assets/9812f983-fc5b-4662-8609-1b35c8db3440/thumbnail?key=3jYpcz-O5GFljeb_FfDGWjLRDg2VrBRkA2LR6CXBhBlZW3UtICQjkLoRb_7QLZ5Vka0'
+  },
+  e2eSlicing: {
+    href: 'https://photos.andreclerigo.com/share/PemSVSCWbqWnucLhBYh6mdJnyBVPnwte4OP1pRBX1m5XD5f7z3i3cyWgOEgwDzuyHlo',
+    thumbnail: 'https://photos.andreclerigo.com/api/assets/4f122e36-b15e-448f-b3d5-27179e0deeeb/thumbnail?key=PemSVSCWbqWnucLhBYh6mdJnyBVPnwte4OP1pRBX1m5XD5f7z3i3cyWgOEgwDzuyHlo'
+  }
+};
+
 export const languageOptions = [
   { code: 'pt', label: 'PT' },
   { code: 'en', label: 'EN' }

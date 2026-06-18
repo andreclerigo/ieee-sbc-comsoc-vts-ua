@@ -706,13 +706,18 @@ export default function App() {
           {content.events.text}
         </SectionHeading>
 
-        <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-3">
+        <div className="mx-auto grid max-w-5xl gap-5 md:grid-cols-2">
           {content.chapterEvents.map((event) => (
             <article key={event.title} className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-              <img src={event.image} alt={event.title} className="h-44 w-full object-cover" />
+              <img src={event.image} alt={event.title} className="h-44 w-full object-cover" loading="lazy" decoding="async" />
               <div className="p-5">
-                <div className="mb-3 flex items-center justify-between gap-3">
-                  <span className="rounded bg-[#00629B]/10 px-2 py-1 text-xs font-bold uppercase text-[#00629B]">{event.source}</span>
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex flex-wrap gap-2">
+                    <span className="rounded bg-[#00629B]/10 px-2 py-1 text-xs font-bold uppercase text-[#00629B]">{event.source}</span>
+                    {event.statusLabel ? (
+                      <span className="rounded bg-emerald-50 px-2 py-1 text-xs font-bold uppercase text-emerald-700">{event.statusLabel}</span>
+                    ) : null}
+                  </div>
                   <span className="text-sm font-semibold text-slate-500">{event.date}</span>
                 </div>
                 <h3 className="text-xl font-bold text-[#1f2937]">{event.title}</h3>
@@ -720,11 +725,13 @@ export default function App() {
                 <p className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-slate-500">
                   <MapPin className="h-4 w-4 text-[#00629B]" /> {event.place}
                 </p>
-                {event.href ? (
-                  <a href={event.href} target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-2 rounded-md border border-slate-300 px-4 py-2 text-sm font-bold text-[#00629B] hover:border-[#00629B] hover:bg-[#00629B] hover:text-white">
-                    <ExternalLink className="h-4 w-4" /> {content.events.openEvent}
-                  </a>
-                ) : null}
+                <div className="mt-5 flex flex-wrap gap-3">
+                  {event.href ? (
+                    <a href={event.href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-md border border-slate-300 px-4 py-2 text-sm font-bold text-[#00629B] hover:border-[#00629B] hover:bg-[#00629B] hover:text-white">
+                      <ExternalLink className="h-4 w-4" /> {content.events.openEvent}
+                    </a>
+                  ) : null}
+                </div>
               </div>
             </article>
           ))}
@@ -790,20 +797,23 @@ export default function App() {
         <SectionHeading eyebrow={content.gallery.eyebrow} title={content.gallery.title}>
           {content.gallery.text}
         </SectionHeading>
-        <div className="mx-auto grid max-w-7xl gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {content.eventPhotos.map((photo, index) => (
-            <button
-              key={photo.title}
-              type="button"
-              onClick={() => setActivePhoto(index)}
-              className={`group overflow-hidden rounded-lg border bg-white text-left shadow-sm transition ${activePhoto === index ? 'border-[#00629B]' : 'border-slate-200 hover:border-[#00629B]'}`}
-            >
-              <img src={photo.image} alt={photo.title} className="h-48 w-full object-cover transition group-hover:scale-[1.03]" />
-              <div className="p-4">
-                <p className="text-xs font-bold uppercase text-[#00629B]">{photo.label}</p>
-                <h3 className="mt-1 font-bold text-[#1f2937]">{photo.title}</h3>
+        <div className="mx-auto grid max-w-7xl gap-5 md:grid-cols-2">
+          {content.gallery.items.map((item) => (
+            <article key={item.title} className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+              <a href={item.href} target="_blank" rel="noreferrer" className="group block overflow-hidden bg-slate-900">
+                <img src={item.image} alt={item.title} className="h-64 w-full object-cover opacity-90 transition group-hover:scale-[1.03] group-hover:opacity-100" loading="lazy" decoding="async" />
+              </a>
+              <div className="p-5">
+                <p className="mb-3 text-sm font-semibold text-slate-500">{item.date}</p>
+                <h3 className="text-xl font-bold text-[#1f2937]">{item.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-600">{item.text}</p>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <a href={item.href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-md bg-[#00629B] px-4 py-2 text-sm font-bold text-white hover:bg-[#005587]">
+                    <Images className="h-4 w-4" /> {content.gallery.openAlbum}
+                  </a>
+                </div>
               </div>
-            </button>
+            </article>
           ))}
         </div>
       </section>

@@ -1,4 +1,4 @@
-import { links, logoUrls } from './shared.js';
+import { links, logoUrls, photoAlbums } from './shared.js';
 
 const en = {
     htmlLang: "en",
@@ -28,24 +28,14 @@ const en = {
     },
     eventPhotos: [
         {
-            title: "IEEE UA Student Branch",
-            label: "Community",
-            image: logoUrls.uaCarousel1,
+            title: "Open Networking for Future Communications",
+            label: "Completed event",
+            image: photoAlbums.openNetworking.thumbnail,
         },
         {
-            title: "Student activities",
-            label: "Campus",
-            image: logoUrls.uaCarousel2,
-        },
-        {
-            title: "ShareToy",
-            label: "Technical volunteering",
-            image: logoUrls.shareToy,
-        },
-        {
-            title: "MicroRato",
-            label: "Competition",
-            image: logoUrls.microRato,
+            title: "E2E Slice Lifecycle Management",
+            label: "Completed event",
+            image: photoAlbums.e2eSlicing.thumbnail,
         },
     ],
     about: {
@@ -91,7 +81,7 @@ const en = {
     ],
     events: {
         eyebrow: "Events",
-        title: "Chapter activities and IEEE network",
+        title: "IEEE Chapter events and network",
         networkEyebrow: "vTools Portugal",
         networkTitle: "ComSoc and VTS Portugal events",
         networkText:
@@ -104,7 +94,7 @@ const en = {
         networkEmpty: "Chapter activities already highlighted above are not repeated in this feed.",
         online: "Online",
         noDescription: "No description is available in vTools.",
-        openEvent: "Open event",
+        openEvent: "Open vTools record",
         openComsocCalendar: "ComSoc Portugal calendar",
         openVtsCalendar: "VTS Portugal calendar",
         openApi: "vTools documentation",
@@ -113,27 +103,46 @@ const en = {
         {
             vtoolsId: "563305",
             source: "Distinguished Lecture",
+            statusLabel: "Completed",
             title: "IEEE Distinguished Lecture: Open Networking for Future Communications",
             date: "16 Jun 2026, 15:00",
             place: "IT-Aveiro, Amphitheatre 19",
             text: "In-person technical seminar with Professor Augusto Venâncio Neto on open, programmable, and disaggregated networking architectures for future communication systems.",
-            image: logoUrls.uaCarousel1,
+            image: photoAlbums.openNetworking.thumbnail,
             href: "https://events.vtools.ieee.org/m/563305",
         },
         {
             vtoolsId: "563156",
             source: "Distinguished Lecture",
+            statusLabel: "Completed",
             title: "IEEE Distinguished Lecture: E2E Slice Lifecycle Management for Telco-Cloud Ecosystems",
             date: "17 Jun 2026, 16:30",
             place: "IT-Aveiro + online",
             text: "Hybrid technical seminar with Professor Augusto Venâncio Neto on network slicing, orchestration, 5G/6G, Open RAN, NFV/SDN, and cloud-edge infrastructures.",
-            image: logoUrls.uaCarousel2,
+            image: photoAlbums.e2eSlicing.thumbnail,
             href: "https://events.vtools.ieee.org/m/563156",
         },
     ],
     gallery: {
         eyebrow: "Gallery",
-        title: "Photos of events and reports",
+        title: "Photo records from chapter events",
+        openAlbum: "Open photo album",
+        items: [
+            {
+                title: "IEEE SBC DL: Open Networking",
+                date: "16 Jun 2026",
+                text: "Photo record from the Distinguished Lecture on open networking for future communications.",
+                image: photoAlbums.openNetworking.thumbnail,
+                href: photoAlbums.openNetworking.href,
+            },
+            {
+                title: "IEEE DL: E2E Slicing",
+                date: "17 Jun 2026",
+                text: "Photo record from the Distinguished Lecture on E2E slice lifecycle management for telco-cloud ecosystems.",
+                image: photoAlbums.e2eSlicing.thumbnail,
+                href: photoAlbums.e2eSlicing.href,
+            },
+        ],
     },
     team: {
         eyebrow: "Team",

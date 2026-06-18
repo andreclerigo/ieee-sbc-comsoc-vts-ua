@@ -1,4 +1,4 @@
-import { links, logoUrls } from './shared.js';
+import { links, logoUrls, photoAlbums } from './shared.js';
 
 const pt = {
     htmlLang: "pt-PT",
@@ -28,24 +28,14 @@ const pt = {
     },
     eventPhotos: [
         {
-            title: "IEEE UA Student Branch",
-            label: "Comunidade",
-            image: logoUrls.uaCarousel1,
+            title: "Open Networking for Future Communications",
+            label: "Evento realizado",
+            image: photoAlbums.openNetworking.thumbnail,
         },
         {
-            title: "Atividades estudantis",
-            label: "Campus",
-            image: logoUrls.uaCarousel2,
-        },
-        {
-            title: "ShareToy",
-            label: "Voluntariado técnico",
-            image: logoUrls.shareToy,
-        },
-        {
-            title: "MicroRato",
-            label: "Competição",
-            image: logoUrls.microRato,
+            title: "E2E Slice Lifecycle Management",
+            label: "Evento realizado",
+            image: photoAlbums.e2eSlicing.thumbnail,
         },
     ],
     about: {
@@ -91,7 +81,7 @@ const pt = {
     ],
     events: {
         eyebrow: "Eventos",
-        title: "Atividades do chapter e rede IEEE",
+        title: "Eventos do IEEE Chapter e rede IEEE",
         networkEyebrow: "vTools Portugal",
         networkTitle: "Eventos ComSoc e VTS Portugal",
         networkText:
@@ -104,7 +94,7 @@ const pt = {
         networkEmpty: "As atividades do chapter já destacadas acima não são repetidas nesta lista.",
         online: "Online",
         noDescription: "Descrição não disponível no vTools.",
-        openEvent: "Abrir evento",
+        openEvent: "Abrir registo vTools",
         openComsocCalendar: "Calendário ComSoc Portugal",
         openVtsCalendar: "Calendário VTS Portugal",
         openApi: "Documentação vTools",
@@ -113,27 +103,46 @@ const pt = {
         {
             vtoolsId: "563305",
             source: "Distinguished Lecture",
+            statusLabel: "Realizado",
             title: "IEEE Distinguished Lecture: Open Networking for Future Communications",
             date: "16 jun 2026, 15:00",
             place: "IT-Aveiro, Anfiteatro 19",
             text: "Seminário técnico presencial com o Professor Augusto Venâncio Neto sobre arquiteturas de rede abertas, programáveis e desagregadas para sistemas de comunicações futuros.",
-            image: logoUrls.uaCarousel1,
+            image: photoAlbums.openNetworking.thumbnail,
             href: "https://events.vtools.ieee.org/m/563305",
         },
         {
             vtoolsId: "563156",
             source: "Distinguished Lecture",
+            statusLabel: "Realizado",
             title: "IEEE Distinguished Lecture: E2E Slice Lifecycle Management for Telco-Cloud Ecosystems",
             date: "17 jun 2026, 16:30",
             place: "IT-Aveiro + online",
             text: "Seminário técnico híbrido com o Professor Augusto Venâncio Neto sobre network slicing, orquestração, 5G/6G, Open RAN, NFV/SDN e infraestruturas cloud-edge.",
-            image: logoUrls.uaCarousel2,
+            image: photoAlbums.e2eSlicing.thumbnail,
             href: "https://events.vtools.ieee.org/m/563156",
         },
     ],
     gallery: {
         eyebrow: "Galeria",
-        title: "Fotos de eventos e reportagens",
+        title: "Registos fotográficos dos eventos do chapter",
+        openAlbum: "Abrir álbum de fotografias",
+        items: [
+            {
+                title: "IEEE SBC DL: Open Networking",
+                date: "16 jun 2026",
+                text: "Registo fotográfico da Distinguished Lecture sobre open networking para comunicações futuras.",
+                image: photoAlbums.openNetworking.thumbnail,
+                href: photoAlbums.openNetworking.href,
+            },
+            {
+                title: "IEEE DL: E2E Slicing",
+                date: "17 jun 2026",
+                text: "Registo fotográfico da Distinguished Lecture sobre gestão de ciclo de vida de slices E2E em ecossistemas telco-cloud.",
+                image: photoAlbums.e2eSlicing.thumbnail,
+                href: photoAlbums.e2eSlicing.href,
+            },
+        ],
     },
     team: {
         eyebrow: "Equipa",
